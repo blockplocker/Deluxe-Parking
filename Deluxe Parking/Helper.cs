@@ -23,5 +23,14 @@ namespace Deluxe_Parking
                 }
             }
         }
+        private static Random random = new Random();
+
+        public static string GenerateRandomLicensePlate()
+        {
+            const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string characters = new string(Enumerable.Repeat(letters, 3).Select(s => s[random.Next(s.Length)]).ToArray());
+            string numbers = random.Next(100, 1000).ToString(); 
+            return characters + numbers;
+        }
     }
 }
