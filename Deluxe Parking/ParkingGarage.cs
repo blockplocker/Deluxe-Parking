@@ -8,30 +8,44 @@ namespace Deluxe_Parking
 {
     public class ParkingGarage
     {
-        private const int TotalSpaces = 15;
-        private const double PricePerMinute = 1.5;
-        private double[] parkingSpaces = new double[TotalSpaces];
+        private int TotalSpaces;
+        //private double PricePerMinute;   Removed since the price is now calculated by the vehicle
+        private double[] parkingSpaces;
         private List<(IVehicle Vehicle, int StartIndex)> parkedVehicles = new List<(IVehicle, int)>();
         private static Random random = new Random();
+
+        public ParkingGarage(int totalSpaces)
+        {
+            TotalSpaces = totalSpaces;
+            parkingSpaces = new double[TotalSpaces];
+        }
 
         // Method to check in a vehicle and assign it a parking space
         public bool CheckInVehicle(IVehicle vehicle)
         {
-            double requiredSpace = vehicle.ParkingSpacesNeeded;
-
-            for (int i = 0; i < TotalSpaces; i++)
+            try
             {
-                if (IsSpaceAvailable(i, requiredSpace))
-                {
-                    AllocateSpace(i, requiredSpace, vehicle);
-                    parkedVehicles.Add((vehicle, i));
-                    Console.WriteLine($"Fordonet med registreringsnummret {vehicle.RegistrationNumber} parkerade på plats {i + 1}.");
-                    return true;
-                }
-            }
+                double requiredSpace = vehicle.ParkingSpacesNeeded;
 
-            Console.WriteLine("Tyvärr finns det inte tillräckligt med plats för detta fordon.");
-            return false;
+                for (int i = 0; i < TotalSpaces; i++)
+                {
+                    if (IsSpaceAvailable(i, requiredSpace))
+                    {
+                        AllocateSpace(i, requiredSpace, vehicle);
+                        parkedVehicles.Add((vehicle, i));
+                        Console.WriteLine($"Fordonet med registreringsnummret {vehicle.RegistrationNumber} parkerade på plats {i + 1}.");
+                        return true;
+                    }
+                }
+
+                Console.WriteLine("Tyvärr finns det inte tillräckligt med plats för detta fordon.");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ett fel inträffade vid incheckning: {ex.Message}");
+                return false;
+            }
         }
 
         // Method to check if space is available for the required parking space
@@ -60,21 +74,30 @@ namespace Deluxe_Parking
         // Method to check out a vehicle by its license plate
         public void CheckOutVehicle(string registrationNumber)
         {
-            var parkedVehicle = parkedVehicles.FirstOrDefault(v => v.Vehicle.RegistrationNumber == registrationNumber);
-            if (parkedVehicle.Vehicle != null)
+            try
             {
-                var vehicle = parkedVehicle.Vehicle;
-                int startIndex = parkedVehicle.StartIndex;
-                var parkedDuration = DateTime.Now - vehicle.EntryTime;
-                double parkingCost = parkedDuration.TotalMinutes * PricePerMinute;
+                var parkedVehicle = parkedVehicles.FirstOrDefault(v => v.Vehicle.RegistrationNumber == registrationNumber);
+                if (parkedVehicle.Vehicle != null)
+                {
+                    var vehicle = parkedVehicle.Vehicle;
+                    int startIndex = parkedVehicle.StartIndex;
+                    TimeSpan parkedDuration = DateTime.Now - vehicle.EntryTime;
 
-                ReleaseSpace(startIndex, vehicle.ParkingSpacesNeeded);
-                parkedVehicles.Remove(parkedVehicle);
-                Console.WriteLine($"Fordonet med registreringsnummret {registrationNumber} har checkat ut. Tid parkerad: {parkedDuration.TotalMinutes:F1} minuter. Total kostnad: {parkingCost:F2} kr.");
+                    //double parkingCost = parkedDuration.TotalMinutes * PricePerMinute; // Calculate cost based on time
+                    double parkingCost = vehicle.CalculateParkingCost(parkedDuration); // Use the vehicle's own method to calculate cost
+
+                    ReleaseSpace(startIndex, vehicle.ParkingSpacesNeeded);
+                    parkedVehicles.Remove(parkedVehicle);
+                    Console.WriteLine($"Fordonet med registreringsnummret {registrationNumber} har checkat ut. Tid parkerad: {parkedDuration.TotalMinutes:F1} minuter. Total kostnad: {parkingCost:F2} kr.");
+                }
+                else
+                {
+                    Console.WriteLine("Fordonet hittades inte.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Fordonet hittades inte.");
+                Console.WriteLine($"Ett fel inträffade vid utcheckning: {ex.Message}");
             }
         }
 
@@ -90,36 +113,36 @@ namespace Deluxe_Parking
         // Display all parked vehicles with spots information
         public void DisplayParkedVehicles()
         {
-            Console.WriteLine("Nuvarande parkeringsstatus:");
-
-            // Sort the parkedVehicles list based on the StartIndex
-            List<(IVehicle Vehicle, int StartIndex)> sortedParkedVehicles = parkedVehicles.OrderBy(v => v.StartIndex).ToList();
-
-            foreach (var (vehicle, startIndex) in sortedParkedVehicles)
+            try
             {
-                // Determine the range of parking spots occupied by this vehicle
-                int endIndex = startIndex + (int)Math.Ceiling(vehicle.ParkingSpacesNeeded) - 1;
+                Console.WriteLine("Nuvarande parkeringsstatus:");
 
-                // Format the spot information
-                string spotInfo = endIndex > startIndex ? $"Plats {startIndex + 1}-{endIndex + 1}" : $"Plats {startIndex + 1}";
+                // Sort the parkedVehicles list based on the StartIndex
+                List<(IVehicle Vehicle, int StartIndex)> sortedParkedVehicles = parkedVehicles.OrderBy(v => v.StartIndex).ToList();
 
-                // Get the base vehicle information
-                string vehicleInfo = $"{vehicle.GetType().Name} {vehicle.RegistrationNumber} {vehicle.Color}";
+                foreach (var (vehicle, startIndex) in sortedParkedVehicles)
+                {
+                    int endIndex = startIndex + (int)Math.Ceiling(vehicle.ParkingSpacesNeeded) - 1; // Determine the range of parking spots occupied by this vehicle
 
-                // Add unique attributes based on vehicle type
-                if (vehicle is Car car)
-                    vehicleInfo += car.IsElectric ? " Elbil" : "";
-                else if (vehicle is Motorcycle motorcycle)
-                    vehicleInfo += " " + motorcycle.Brand;
-                else if (vehicle is Bus bus)
-                    vehicleInfo += " " + bus.PassengerCount;
+                    string spotInfo = endIndex > startIndex ? $"Plats {startIndex + 1}-{endIndex + 1}" : $"Plats {startIndex + 1}"; // Format the spot information
 
-                // Display the formatted information for this vehicle
-                Console.WriteLine($"{spotInfo}: {vehicleInfo}");
+                    string vehicleInfo = $"{vehicle.GetType().Name} {vehicle.RegistrationNumber} {vehicle.Color}"; // Get the base vehicle information
+
+                    // Add unique attributes based on vehicle type
+                    if (vehicle is Car car)
+                        vehicleInfo += car.IsElectric ? " Elbil" : "";
+                    else if (vehicle is Motorcycle motorcycle)
+                        vehicleInfo += " " + motorcycle.Brand;
+                    else if (vehicle is Bus bus)
+                        vehicleInfo += " " + bus.PassengerCount;
+
+                    Console.WriteLine($"{spotInfo}: {vehicleInfo}"); // Display the formatted information for this vehicle
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ett fel inträffade vid visning av parkerade fordon: {ex.Message}");
             }
         }
-
-
     }
-
 }

@@ -8,28 +8,35 @@ namespace Deluxe_Parking
 {
     public class Helper
     {
-        
         public static int GetValidInteger()
         {
             while (true)
             {
-                if (int.TryParse(Console.ReadLine(), out int number))
+                try
                 {
-                    return number;
+                    if (int.TryParse(Console.ReadLine(), out int number))
+                    {
+                        return number;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ogiltigt val, försök igen.");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Ogiltigt val, försök igen.");
+                    Console.WriteLine($"Ett fel inträffade: {ex.Message}");
                 }
             }
         }
+
         private static Random random = new Random();
 
         public static string GenerateRandomLicensePlate()
         {
             const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             string characters = new string(Enumerable.Repeat(letters, 3).Select(s => s[random.Next(s.Length)]).ToArray());
-            string numbers = random.Next(100, 1000).ToString(); 
+            string numbers = random.Next(100, 1000).ToString();
             return characters + numbers;
         }
     }
