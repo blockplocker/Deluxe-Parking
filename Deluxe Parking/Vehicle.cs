@@ -54,7 +54,7 @@ namespace Deluxe_Parking
         public int PassengerCount { get; set; }
         public double ParkingSpacesNeeded => 2; //  fixed value
 
-        public Bus(string registrationNumber, string color, DateTime entryTime, int passengerCount )
+        public Bus(string registrationNumber, string color, DateTime entryTime, int passengerCount)
         {
             RegistrationNumber = registrationNumber;
             Color = color;
