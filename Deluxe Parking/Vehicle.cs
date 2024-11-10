@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Deluxe_Parking
 {
-    interface IVehicle
+    public interface IVehicle
     {
         string RegistrationNumber { get; set; }
         string Color { get; set; }
-        int EntryTime { get; set; }
+        DateTime EntryTime { get; set; }
         double ParkingSpacesNeeded { get; }
     }
 
@@ -18,10 +18,10 @@ namespace Deluxe_Parking
     {
         public string RegistrationNumber { get; set; }
         public string Color { get; set; }
-        public int EntryTime { get; set; }
+        public DateTime EntryTime { get; set; }
         public bool IsElectric { get; set; }
         public double ParkingSpacesNeeded => 1; //  fixed value
-        public Car(string registrationNumber, string color, int entryTime, bool isElectric)
+        public Car(string registrationNumber, string color, DateTime entryTime, bool isElectric)
         {
             RegistrationNumber = registrationNumber;
             Color = color;
@@ -34,10 +34,10 @@ namespace Deluxe_Parking
     {
         public string RegistrationNumber { get; set; }
         public string Color { get; set; }
-        public int EntryTime { get; set; }
+        public DateTime EntryTime { get; set; }
         public string Brand { get; set; }
         public double ParkingSpacesNeeded => 0.5; // fixed value
-        public Motorcycle(string registrationNumber, string color, int entryTime, string brand)
+        public Motorcycle(string registrationNumber, string color, DateTime entryTime, string brand)
         {
             RegistrationNumber = registrationNumber;
             Color = color;
@@ -50,11 +50,11 @@ namespace Deluxe_Parking
     {
         public string RegistrationNumber { get; set; }
         public string Color { get; set; }
-        public int EntryTime { get; set; }
+        public DateTime EntryTime { get; set; }
         public int PassengerCount { get; set; }
         public double ParkingSpacesNeeded => 2; //  fixed value
 
-        public Bus(string registrationNumber, string color, int entryTime, int passengerCount )
+        public Bus(string registrationNumber, string color, DateTime entryTime, int passengerCount )
         {
             RegistrationNumber = registrationNumber;
             Color = color;

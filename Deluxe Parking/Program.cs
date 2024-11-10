@@ -9,50 +9,76 @@ namespace Deluxe_Parking
         static void Main(string[] args)
         {
 
+            ParkingGarage garage = new ParkingGarage();
+
             while (true)
             {
                 Console.WriteLine("Välkommen till Deluxe Parking!");
                 Console.WriteLine("1: Checka in");
                 Console.WriteLine("2: Checka ut");
                 Console.WriteLine("3: Visa fordon");
+                Console.WriteLine("0: Avsluta");
 
                 int choice = Helper.GetValidInteger();
                 switch (choice)
                 {
                     case 1:
                         Console.WriteLine("Välj fordonstyp 1: Bil, 2: Motorcykel, 3: Buss ");
-
                         int vehicleType = Helper.GetValidInteger();
+
+                        IVehicle vehicle = null;
+                        string registrationNumber = Helper.GenerateRandomLicensePlate();
+                        Console.WriteLine("Ange färg på fordonet:");
+                        string color = Console.ReadLine();
+
                         switch (vehicleType)
                         {
-                            case 1:
+                            case 1: // Car
+                                Console.WriteLine("Är bilen en elbil? (ja/nej)");
+                                bool isElectric = Console.ReadLine()?.ToLower() == "ja";
+                                vehicle = new Car(registrationNumber, color, DateTime.Now, isElectric);
                                 break;
-                            case 2:
+
+                            case 2: // Motorcycle
+                                Console.WriteLine("Ange märke för motorcykeln:");
+                                string brand = Console.ReadLine();
+                                vehicle = new Motorcycle(registrationNumber, color, DateTime.Now, brand);
                                 break;
-                            case 3:
+
+                            case 3: // Bus
+                                Console.WriteLine("Ange antal passagerare för bussen:");
+                                int passengerCount = Helper.GetValidInteger();
+                                vehicle = new Bus(registrationNumber, color, DateTime.Now, passengerCount);
                                 break;
+
+                            default:
+                                Console.WriteLine("Ogiltig fordonstyp.");
+                                continue;
+                        }
+
+                        if (vehicle != null)
+                        {
+                            garage.CheckInVehicle(vehicle);
                         }
                         break;
 
                     case 2:
                         Console.WriteLine("Ange registreringsnummer för fordonet som ska checkas ut:");
-                        string regNum = Console.ReadLine();
-                        //garage.CheckOutVehicle(regNum);
+                        string regNum = Console.ReadLine().ToUpper();
+                        garage.CheckOutVehicle(regNum);
                         break;
 
                     case 3:
-                        //garage.DisplayParkedVehicles();
+                        garage.DisplayParkedVehicles();
                         break;
 
                     case 0:
+                        Console.WriteLine("Tack för att du använder Deluxe Parking!");
                         return;
 
                     default:
                         Console.WriteLine("Ogiltigt val.");
                         break;
-
-
-
                 }
             }
         }
