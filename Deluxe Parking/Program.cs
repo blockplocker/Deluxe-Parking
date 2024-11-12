@@ -8,7 +8,7 @@ namespace Deluxe_Parking
     {
         static void Main(string[] args)
         {
-            ParkingGarage garage = new ParkingGarage(15,1.5);
+            IParkingGarage garage = new ParkingGarage(15, 1.5);
 
             while (true)
             {
@@ -51,7 +51,7 @@ namespace Deluxe_Parking
             }
         }
 
-        private static void CheckInVehicle(ParkingGarage garage)
+        private static void CheckInVehicle(IParkingGarage garage)
         {
             Console.WriteLine("Välj fordonstyp 1: Bil, 2: Motorcykel, 3: Buss ");
             int vehicleType = Helper.GetValidInteger();
@@ -91,7 +91,7 @@ namespace Deluxe_Parking
             }
         }
 
-        private static void CheckOutVehicle(ParkingGarage garage)
+        private static void CheckOutVehicle(IParkingGarage garage)
         {
             Console.WriteLine("Ange registreringsnummer för fordonet som ska checkas ut:");
             string regNum = Console.ReadLine().ToUpper();

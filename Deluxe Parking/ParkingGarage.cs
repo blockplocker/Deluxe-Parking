@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace Deluxe_Parking
 {
-    public class ParkingGarage
+    public interface IParkingGarage
+    {
+        bool CheckInVehicle(IVehicle vehicle);
+        void CheckOutVehicle(string registrationNumber);
+        void DisplayParkedVehicles();
+    }
+    public class ParkingGarage : IParkingGarage
     {
         private int TotalSpaces;
         private double PricePerMinute;  
         private double[] parkingSpaces;
         private List<(IVehicle Vehicle, int StartIndex)> parkedVehicles = new List<(IVehicle, int)>();
-        private static Random random = new Random();
 
         public ParkingGarage(int totalSpaces, double pricePerMinute)
         {
