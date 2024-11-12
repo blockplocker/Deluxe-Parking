@@ -56,7 +56,7 @@ namespace Deluxe_Parking
             Console.WriteLine("Välj fordonstyp 1: Bil, 2: Motorcykel, 3: Buss ");
             int vehicleType = Helper.GetValidInteger();
 
-            IVehicle vehicle = null;
+            Vehicle vehicle = null;
             Console.WriteLine("Ange färg på fordonet:");
             string color = Console.ReadLine();
 
