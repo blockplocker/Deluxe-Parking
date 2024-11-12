@@ -12,7 +12,6 @@ namespace Deluxe_Parking
         string Color { get; set; }
         DateTime EntryTime { get; set; }
         double ParkingSpacesNeeded { get; }
-        double CalculateParkingCost(TimeSpan duration); // vehicles can calculate their own parking cost
     }
 
     public class Car : IVehicle
@@ -28,11 +27,6 @@ namespace Deluxe_Parking
             Color = color;
             EntryTime = entryTime;
             IsElectric = isElectric;
-        }
-        public double CalculateParkingCost(TimeSpan duration)
-        {
-            double rate = IsElectric ? 1.0 : 1.5; // Different rate for electric cars
-            return duration.TotalMinutes * rate;
         }
     }
 
@@ -50,10 +44,6 @@ namespace Deluxe_Parking
             EntryTime = entryTime;
             Brand = brand;
         }
-        public double CalculateParkingCost(TimeSpan duration)
-        {
-            return duration.TotalMinutes * 0.75; // Different rate for motorcycles
-        }
     }
 
     public class Bus : IVehicle
@@ -70,10 +60,6 @@ namespace Deluxe_Parking
             Color = color;
             EntryTime = entryTime;
             PassengerCount = passengerCount;
-        }
-        public double CalculateParkingCost(TimeSpan duration) 
-        {
-            return duration.TotalMinutes * 2.0; // Different rate for buses
         }
     }
 

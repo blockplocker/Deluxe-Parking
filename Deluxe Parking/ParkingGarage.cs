@@ -9,14 +9,15 @@ namespace Deluxe_Parking
     public class ParkingGarage
     {
         private int TotalSpaces;
-        //private double PricePerMinute;   Removed since the price is now calculated by the vehicle
+        private double PricePerMinute;  
         private double[] parkingSpaces;
         private List<(IVehicle Vehicle, int StartIndex)> parkedVehicles = new List<(IVehicle, int)>();
         private static Random random = new Random();
 
-        public ParkingGarage(int totalSpaces)
+        public ParkingGarage(int totalSpaces, double pricePerMinute)
         {
             TotalSpaces = totalSpaces;
+            PricePerMinute = pricePerMinute;
             parkingSpaces = new double[TotalSpaces];
         }
 
@@ -56,7 +57,7 @@ namespace Deluxe_Parking
             double spaceNeeded = requiredSpace;
             for (int i = index; i < index + requiredSpace; i++)
             {
-                if (parkingSpaces[i] >= 1) return false; // Full spot, cannot be used
+                if (parkingSpaces[i] >= 1) return false; // Full spot
                 spaceNeeded -= (1 - parkingSpaces[i]); // Decrement needed space by available fractional space
             }
             return spaceNeeded <= 0; // True if enough fractional space was found
@@ -79,12 +80,11 @@ namespace Deluxe_Parking
                 var parkedVehicle = parkedVehicles.FirstOrDefault(v => v.Vehicle.RegistrationNumber == registrationNumber);
                 if (parkedVehicle.Vehicle != null)
                 {
-                    var vehicle = parkedVehicle.Vehicle;
+                    IVehicle vehicle = parkedVehicle.Vehicle;
                     int startIndex = parkedVehicle.StartIndex;
                     TimeSpan parkedDuration = DateTime.Now - vehicle.EntryTime;
 
-                    //double parkingCost = parkedDuration.TotalMinutes * PricePerMinute; // Calculate cost based on time
-                    double parkingCost = vehicle.CalculateParkingCost(parkedDuration); // Use the vehicle's own method to calculate cost
+                    double parkingCost = parkedDuration.TotalMinutes * PricePerMinute; // Calculate cost based on time
 
                     ReleaseSpace(startIndex, vehicle.ParkingSpacesNeeded);
                     parkedVehicles.Remove(parkedVehicle);

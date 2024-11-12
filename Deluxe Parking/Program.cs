@@ -1,14 +1,11 @@
-﻿using System.Drawing;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
-
+﻿using System;
 namespace Deluxe_Parking
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            ParkingGarage garage = new ParkingGarage(15);
+            ParkingGarage garage = new ParkingGarage(15,1.5);
 
             while (true)
             {
