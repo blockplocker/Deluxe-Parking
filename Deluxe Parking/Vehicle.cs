@@ -6,60 +6,48 @@ using System.Threading.Tasks;
 
 namespace Deluxe_Parking
 {
-    public interface IVehicle
-    {
-        string RegistrationNumber { get; set; }
-        string Color { get; set; }
-        DateTime EntryTime { get; set; }
-        double ParkingSpacesNeeded { get; }
-    }
-
-    public class Car : IVehicle
+    public abstract class Vehicle
     {
         public string RegistrationNumber { get; set; }
         public string Color { get; set; }
         public DateTime EntryTime { get; set; }
-        public bool IsElectric { get; set; }
-        public double ParkingSpacesNeeded => 1; //  fixed value
-        public Car(string color, DateTime entryTime, bool isElectric)
+        public abstract double ParkingSpacesNeeded { get; }
+        public Vehicle(string color, DateTime entryTime )
         {
             RegistrationNumber = Helper.GenerateRandomLicensePlate();
             Color = color;
             EntryTime = entryTime;
+        }
+    }
+
+    public class Car : Vehicle
+    {
+        public bool IsElectric { get; set; }
+        public override double ParkingSpacesNeeded => 1; //  fixed value
+        public Car(string color, DateTime entryTime, bool isElectric) : base(color, entryTime)
+        {
             IsElectric = isElectric;
         }
     }
 
-    public class Motorcycle : IVehicle
+    public class Motorcycle : Vehicle
     {
-        public string RegistrationNumber { get; set; }
-        public string Color { get; set; }
-        public DateTime EntryTime { get; set; }
         public string Brand { get; set; }
-        public double ParkingSpacesNeeded => 0.5; // fixed value
-        public Motorcycle(string color, DateTime entryTime, string brand)
+        public override double ParkingSpacesNeeded => 0.5; // fixed value
+        public Motorcycle(string color, DateTime entryTime, string brand) : base(color, entryTime)
         {
-            RegistrationNumber = Helper.GenerateRandomLicensePlate();
-            Color = color;
-            EntryTime = entryTime;
             Brand = brand;
         }
     }
 
-    public class Bus : IVehicle
+    public class Bus : Vehicle
     {
-        public string RegistrationNumber { get; set; }
-        public string Color { get; set; }
-        public DateTime EntryTime { get; set; }
         public int PassengerCount { get; set; }
-        public double ParkingSpacesNeeded => 2; //  fixed value
+        public override double ParkingSpacesNeeded => 2; //  fixed value
 
-        public Bus(string color, DateTime entryTime, int passengerCount)
+        public Bus(string color, DateTime entryTime, int passengerCount) : base(color, entryTime)
         {
-            RegistrationNumber = Helper.GenerateRandomLicensePlate();
-            Color = color;
-            EntryTime = entryTime;
-            PassengerCount = passengerCount;
+            PassengerCount = passengerCount > 0 ? passengerCount :throw new ArgumentException("Antal passagerare måste vara mer än noll");
         }
     }
 
