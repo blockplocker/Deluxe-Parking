@@ -1,4 +1,7 @@
 ﻿using System;
+
+using System.Security.Cryptography.X509Certificates;
+
 namespace Deluxe_Parking
 {
     internal class Program
@@ -54,7 +57,6 @@ namespace Deluxe_Parking
             int vehicleType = Helper.GetValidInteger();
 
             IVehicle vehicle = null;
-            string registrationNumber = Helper.GenerateRandomLicensePlate();
             Console.WriteLine("Ange färg på fordonet:");
             string color = Console.ReadLine();
 
@@ -63,19 +65,19 @@ namespace Deluxe_Parking
                 case 1: // Car
                     Console.WriteLine("Är bilen en elbil? (ja/nej)");
                     bool isElectric = Console.ReadLine()?.ToLower() == "ja";
-                    vehicle = new Car(registrationNumber, color, DateTime.Now, isElectric);
+                    vehicle = new Car(color, DateTime.Now, isElectric);
                     break;
 
                 case 2: // Motorcycle
                     Console.WriteLine("Ange märke för motorcykeln:");
                     string brand = Console.ReadLine();
-                    vehicle = new Motorcycle(registrationNumber, color, DateTime.Now, brand);
+                    vehicle = new Motorcycle(color, DateTime.Now, brand);
                     break;
 
                 case 3: // Bus
                     Console.WriteLine("Ange antal passagerare för bussen:");
                     int passengerCount = Helper.GetValidInteger();
-                    vehicle = new Bus(registrationNumber, color, DateTime.Now, passengerCount);
+                    vehicle = new Bus(color, DateTime.Now, passengerCount);
                     break;
 
                 default:

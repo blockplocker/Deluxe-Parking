@@ -21,9 +21,9 @@ namespace Deluxe_Parking
         public DateTime EntryTime { get; set; }
         public bool IsElectric { get; set; }
         public double ParkingSpacesNeeded => 1; //  fixed value
-        public Car(string registrationNumber, string color, DateTime entryTime, bool isElectric)
+        public Car(string color, DateTime entryTime, bool isElectric)
         {
-            RegistrationNumber = registrationNumber;
+            RegistrationNumber = Helper.GenerateRandomLicensePlate();
             Color = color;
             EntryTime = entryTime;
             IsElectric = isElectric;
@@ -37,9 +37,9 @@ namespace Deluxe_Parking
         public DateTime EntryTime { get; set; }
         public string Brand { get; set; }
         public double ParkingSpacesNeeded => 0.5; // fixed value
-        public Motorcycle(string registrationNumber, string color, DateTime entryTime, string brand)
+        public Motorcycle(string color, DateTime entryTime, string brand)
         {
-            RegistrationNumber = registrationNumber;
+            RegistrationNumber = Helper.GenerateRandomLicensePlate();
             Color = color;
             EntryTime = entryTime;
             Brand = brand;
@@ -54,9 +54,9 @@ namespace Deluxe_Parking
         public int PassengerCount { get; set; }
         public double ParkingSpacesNeeded => 2; //  fixed value
 
-        public Bus(string registrationNumber, string color, DateTime entryTime, int passengerCount)
+        public Bus(string color, DateTime entryTime, int passengerCount)
         {
-            RegistrationNumber = registrationNumber;
+            RegistrationNumber = Helper.GenerateRandomLicensePlate();
             Color = color;
             EntryTime = entryTime;
             PassengerCount = passengerCount;
