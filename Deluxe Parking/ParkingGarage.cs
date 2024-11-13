@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Deluxe_Parking
 {
-    public interface IParkingGarage
+    public interface IParkingGarage // Interface for the parking garage to ensure encapsulation so that the garage can be used without knowing the implementation details
     {
-        bool CheckInVehicle(IVehicle vehicle);
+        bool CheckInVehicle(Vehicle vehicle);
         void CheckOutVehicle(string registrationNumber);
         void DisplayParkedVehicles();
     }
@@ -17,7 +17,7 @@ namespace Deluxe_Parking
         private int TotalSpaces;
         private double PricePerMinute;  
         private double[] parkingSpaces;
-        private List<(IVehicle Vehicle, int StartIndex)> parkedVehicles = new List<(IVehicle, int)>();
+        private List<(Vehicle Vehicle, int StartIndex)> parkedVehicles = new List<(Vehicle, int)>();
 
         public ParkingGarage(int totalSpaces, double pricePerMinute)
         {
@@ -27,7 +27,7 @@ namespace Deluxe_Parking
         }
 
         // Method to check in a vehicle and assign it a parking space
-        public bool CheckInVehicle(IVehicle vehicle)
+        public bool CheckInVehicle(Vehicle vehicle)
         {
             try
             {
@@ -39,6 +39,7 @@ namespace Deluxe_Parking
                     {
                         AllocateSpace(i, requiredSpace, vehicle);
                         parkedVehicles.Add((vehicle, i));
+                        Console.Clear();
                         Console.WriteLine($"Fordonet med registreringsnummret {vehicle.RegistrationNumber} parkerade på plats {i + 1}.");
                         return true;
                     }
@@ -69,7 +70,7 @@ namespace Deluxe_Parking
         }
 
         // Method to allocate parking space
-        private void AllocateSpace(int index, double requiredSpace, IVehicle vehicle)
+        private void AllocateSpace(int index, double requiredSpace, Vehicle vehicle)
         {
             for (int i = index; i < index + requiredSpace; i++)
             {
@@ -85,7 +86,7 @@ namespace Deluxe_Parking
                 var parkedVehicle = parkedVehicles.FirstOrDefault(v => v.Vehicle.RegistrationNumber == registrationNumber);
                 if (parkedVehicle.Vehicle != null)
                 {
-                    IVehicle vehicle = parkedVehicle.Vehicle;
+                    Vehicle vehicle = parkedVehicle.Vehicle;
                     int startIndex = parkedVehicle.StartIndex;
                     TimeSpan parkedDuration = DateTime.Now - vehicle.EntryTime;
 
@@ -93,6 +94,7 @@ namespace Deluxe_Parking
 
                     ReleaseSpace(startIndex, vehicle.ParkingSpacesNeeded);
                     parkedVehicles.Remove(parkedVehicle);
+                    Console.Clear();
                     Console.WriteLine($"Fordonet med registreringsnummret {registrationNumber} har checkat ut. Tid parkerad: {parkedDuration.TotalMinutes:F1} minuter. Total kostnad: {parkingCost:F2} kr.");
                 }
                 else
@@ -120,10 +122,11 @@ namespace Deluxe_Parking
         {
             try
             {
+                Console.Clear();
                 Console.WriteLine("Nuvarande parkeringsstatus:");
 
                 // Sort the parkedVehicles list based on the StartIndex
-                List<(IVehicle Vehicle, int StartIndex)> sortedParkedVehicles = parkedVehicles.OrderBy(v => v.StartIndex).ToList();
+                List<(Vehicle Vehicle, int StartIndex)> sortedParkedVehicles = parkedVehicles.OrderBy(v => v.StartIndex).ToList();
 
                 foreach (var (vehicle, startIndex) in sortedParkedVehicles)
                 {

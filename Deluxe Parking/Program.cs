@@ -14,7 +14,8 @@ namespace Deluxe_Parking
             {
                 try
                 {
-                    Console.WriteLine("Välkommen till Deluxe Parking!");
+                    Console.WriteLine();
+                    Console.WriteLine("Deluxe Parking!");
                     Console.WriteLine("1: Checka in");
                     Console.WriteLine("2: Checka ut");
                     Console.WriteLine("3: Visa fordon");
@@ -56,7 +57,7 @@ namespace Deluxe_Parking
             Console.WriteLine("Välj fordonstyp 1: Bil, 2: Motorcykel, 3: Buss ");
             int vehicleType = Helper.GetValidInteger();
 
-            IVehicle vehicle = null;
+            Vehicle vehicle = null;
             Console.WriteLine("Ange färg på fordonet:");
             string color = Console.ReadLine();
 
