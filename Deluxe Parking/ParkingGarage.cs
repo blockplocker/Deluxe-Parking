@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Deluxe_Parking
 {
-    public interface IParkingGarage
+    public interface IParkingGarage // Interface for the parking garage to ensure encapsulation so that the garage can be used without knowing the implementation details
     {
         bool CheckInVehicle(Vehicle vehicle);
         void CheckOutVehicle(string registrationNumber);
@@ -39,6 +39,7 @@ namespace Deluxe_Parking
                     {
                         AllocateSpace(i, requiredSpace, vehicle);
                         parkedVehicles.Add((vehicle, i));
+                        Console.Clear();
                         Console.WriteLine($"Fordonet med registreringsnummret {vehicle.RegistrationNumber} parkerade på plats {i + 1}.");
                         return true;
                     }
@@ -93,6 +94,7 @@ namespace Deluxe_Parking
 
                     ReleaseSpace(startIndex, vehicle.ParkingSpacesNeeded);
                     parkedVehicles.Remove(parkedVehicle);
+                    Console.Clear();
                     Console.WriteLine($"Fordonet med registreringsnummret {registrationNumber} har checkat ut. Tid parkerad: {parkedDuration.TotalMinutes:F1} minuter. Total kostnad: {parkingCost:F2} kr.");
                 }
                 else
@@ -120,6 +122,7 @@ namespace Deluxe_Parking
         {
             try
             {
+                Console.Clear();
                 Console.WriteLine("Nuvarande parkeringsstatus:");
 
                 // Sort the parkedVehicles list based on the StartIndex
